@@ -15,6 +15,6 @@ class Playlist {
     Playlist(const std::string& playlist_name);
     void add(const Song& song);
     void remove(int song_ID);
-    void render(void);
+    std::string render(void);
     unsigned short size(void);
 };

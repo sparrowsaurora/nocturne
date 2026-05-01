@@ -12,11 +12,8 @@ void Playlist::remove(int song_ID) {
     // remove song
 }
 
-void Playlist::render(void) {
-    std::cout << name << " contains: " << std::endl;
-    for (Song song : songs) {
-        std::cout << "\t- " << song.get_name() << std::endl;
-    }
+std::string Playlist::render(void) {
+    return name;
 }
 
 unsigned short Playlist::size() {
