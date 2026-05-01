@@ -5,3 +5,11 @@ Song::Song(const std::string& song_name, const std::string& location, const int&
 void Song::render() {
     std::cout << name << std::endl;
 }
+
+const std::string& Song::get_name() {
+    return name;
+}
+
+const int Song::get_ID() {
+    return ID;
+}

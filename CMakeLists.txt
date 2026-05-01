@@ -12,6 +12,7 @@ include_directories(${CURSES_INCLUDE_DIR})
 add_executable(nocturne
     src/main.cpp
     src/song.cpp
+    src/playlist.cpp
 )
 
 # add include dir
