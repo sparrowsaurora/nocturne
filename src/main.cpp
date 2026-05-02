@@ -5,57 +5,100 @@
 #include "playlist.hpp"
 #include "song.hpp"
 
+void render_playlists(
+    WINDOW* playlist_window,
+    std::vector<Playlist>& playlists,
+    int selected_playlist) {
+    std::string playlist_name;
+
+    werase(playlist_window);  // clear playlist window
+
+    wattron(playlist_window, COLOR_PAIR(1));
+    box(playlist_window, 0, 0);  // make box have borders
+    wattroff(playlist_window, COLOR_PAIR(1));
+    mvwprintw(playlist_window, 0, 2, "Playlists");  // playlist word still white
+
+    for (int i = 0; i < (int)playlists.size(); i++) {
+        if (i == selected_playlist) {
+            wattron(playlist_window, COLOR_PAIR(2));
+        }
+
+        playlist_name = playlists.at(i).render();
+        mvwprintw(playlist_window, (i + 1), 3, "%s", playlist_name.c_str());
+
+        if (i == selected_playlist) {
+            wattroff(playlist_window, COLOR_PAIR(2));
+        }
+    }
+
+    // refresh once per frame
+    wrefresh(playlist_window);
+}
+
 int main() {
     std::vector<Playlist> playlists;
 
+    // setup
     initscr();      // Start ncurses mode
     start_color();  // turns on colour
-    // printw("Hello, ncurses!");
-    // main playlist section
+    cbreak();
+    noecho();
 
-    // newwin(lines down, cols across, starting lines down, starting cols across)
+    // colour pairs
+    init_pair(1, COLOR_BLUE, COLOR_BLACK);
+    init_pair(2, COLOR_BLACK, COLOR_WHITE);
 
     int screen_y, screen_x;
     getmaxyx(stdscr, screen_y, screen_x);
 
-    WINDOW *playlist_window = newwin((screen_y - 3), 30, 1, 3);
-    init_pair(1, COLOR_BLUE, COLOR_BLACK);
-    wattron(playlist_window, COLOR_PAIR(1));
-    box(playlist_window, 0, 0);  // make box have borders
-    wattroff(playlist_window, COLOR_PAIR(1));
-
-    refresh();  // Print to screen
-
-    mvwprintw(playlist_window, 0, 2, "Playlists");
-    // print into box
-    // plalists input here
+    // Prep default data
     Song song1("song1", "somewhere", 654);
-    // song1.render();
-
     Song song2("song2", "nowhere", 324);
+    Song song3("song2", "everywhere", 68);
 
-    Playlist pl("some random name");
-    playlists.push_back(pl);
+    Playlist pl("Playlist:1");
     pl.add(song1);
     pl.add(song2);
+    playlists.push_back(pl);
 
-    // pl.render();
-
-    Playlist pl2("hello2");
-    playlists.push_back(pl2);
+    Playlist pl2("Playlist:2");
     pl2.add(song2);
+    playlists.push_back(pl2);
 
-    std::string playlist_name;
-    for (int i = 0; i < playlists.size(); i++) {
-        playlist_name = playlists.at(i).render();
-        mvwprintw(playlist_window, (i + 1), 3, "%s", playlist_name.c_str());
+    // main playlist section
+    // newwin(lines down, cols across, starting lines down, starting cols across)
+    WINDOW* playlist_window = newwin((screen_y - 3), 30, 1, 3);  // Playlists
+    keypad(playlist_window, TRUE);                               // enable keyboard on playlist window
+    refresh();                                                   // create playlists window on screen
+
+    int selected_playlist = 0;
+    int input;
+
+    // initial render
+    render_playlists(playlist_window, playlists, selected_playlist);
+
+    // main loop
+    while ((input = wgetch(playlist_window)) != 'q') {  // get key press
+        switch (input) {
+            case KEY_UP:
+                if (selected_playlist == 0) {
+                    continue;
+                }
+                selected_playlist--;
+                break;
+            case KEY_DOWN:
+                if (selected_playlist == ((int)playlists.size() - 1)) {
+                    continue;
+                }
+                selected_playlist++;
+                break;
+            case KEY_ENTER:
+                break;
+            default:
+                break;
+        }
+        render_playlists(playlist_window, playlists, selected_playlist);
     }
-
-    wrefresh(playlist_window);
-
-    getch();  // Wait for key press
-
-    // std::cout << "pl1 has: " << pl.size() << " songs" << std::endl;
 
     endwin();  // End ncurses mode
     return 0;
