@@ -12,9 +12,7 @@ class Song {
 
    public:
     Song(const std::string& name, const std::string& location, const int& length_seconds);
-    void render(void);
-
-    const std::string& get_name(void);
+    std::string render(void) const;
     const int get_ID(void);
 };
 

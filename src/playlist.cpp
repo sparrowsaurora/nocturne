@@ -12,10 +12,14 @@ void Playlist::remove(int song_ID) {
     // remove song
 }
 
-std::string Playlist::render(void) {
+std::string Playlist::render(void) const {
     return name;
 }
 
 unsigned short Playlist::size() {
     return songs.size();
+}
+
+std::vector<Song>& Playlist::get_songs(void) {
+    return songs;
 }

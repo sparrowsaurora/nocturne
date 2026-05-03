@@ -5,9 +5,16 @@
 #include "playlist.hpp"
 #include "song.hpp"
 
-void render_playlists(
+enum Mode {
+    PLAYLIST,
+    SONG,
+};
+
+template <typename T>
+void render_window(
+    const char* title,
     WINDOW* playlist_window,
-    std::vector<Playlist>& playlists,
+    const std::vector<T>& playlists,
     int selected_playlist) {
     std::string playlist_name;
 
@@ -16,7 +23,7 @@ void render_playlists(
     wattron(playlist_window, COLOR_PAIR(1));
     box(playlist_window, 0, 0);  // make box have borders
     wattroff(playlist_window, COLOR_PAIR(1));
-    mvwprintw(playlist_window, 0, 2, "Playlists");  // playlist word still white
+    mvwprintw(playlist_window, 0, 2, "%s", title);  // playlist word still white
 
     for (int i = 0; i < (int)playlists.size(); i++) {
         if (i == selected_playlist) {
@@ -63,19 +70,25 @@ int main() {
 
     Playlist pl2("Playlist:2");
     pl2.add(song2);
+    pl2.add(song3);
     playlists.push_back(pl2);
 
     // main playlist section
     // newwin(lines down, cols across, starting lines down, starting cols across)
     WINDOW* playlist_window = newwin((screen_y - 3), 30, 1, 3);  // Playlists
     keypad(playlist_window, TRUE);                               // enable keyboard on playlist window
-    refresh();                                                   // create playlists window on screen
+
+    WINDOW* song_window = newwin((screen_y - 3), 30, 1, 33);  // songs window
+
+    refresh();  // create playlists & songs window on screen
 
     int selected_playlist = 0;
+    int selected_song = 0;
     int input;
 
     // initial render
-    render_playlists(playlist_window, playlists, selected_playlist);
+    render_window("Playlists", playlist_window, playlists, selected_playlist);
+    render_window("Songs", song_window, (playlists.at(selected_playlist).get_songs()), selected_song);
 
     // main loop
     while ((input = wgetch(playlist_window)) != 'q') {  // get key press
@@ -93,11 +106,13 @@ int main() {
                 selected_playlist++;
                 break;
             case KEY_ENTER:
+                // switch mode to song navigation
+
                 break;
             default:
                 break;
         }
-        render_playlists(playlist_window, playlists, selected_playlist);
+        render_window("Playlists", playlist_window, playlists, selected_playlist);
     }
 
     endwin();  // End ncurses mode
