@@ -12,7 +12,7 @@ void Playlist::remove(int song_ID) {
     // remove song
 }
 
-std::string Playlist::render(void) const {
+std::string Playlist::to_string(void) const {
     return name;
 }
 

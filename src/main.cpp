@@ -13,33 +13,33 @@ enum Mode {
 template <typename T>
 void render_window(
     const char* title,
-    WINDOW* playlist_window,
-    const std::vector<T>& playlists,
-    int selected_playlist) {
-    std::string playlist_name;
+    WINDOW* window,
+    const std::vector<T>& list,
+    int selected_item) {
+    std::string name;
 
-    werase(playlist_window);  // clear playlist window
+    werase(window);  // clear playlist window
 
-    wattron(playlist_window, COLOR_PAIR(1));
-    box(playlist_window, 0, 0);  // make box have borders
-    wattroff(playlist_window, COLOR_PAIR(1));
-    mvwprintw(playlist_window, 0, 2, "%s", title);  // playlist word still white
+    wattron(window, COLOR_PAIR(1));
+    box(window, 0, 0);  // make box have borders
+    wattroff(window, COLOR_PAIR(1));
+    mvwprintw(window, 0, 2, "%s", title);  // playlist word still white
 
-    for (int i = 0; i < (int)playlists.size(); i++) {
-        if (i == selected_playlist) {
-            wattron(playlist_window, COLOR_PAIR(2));
+    for (int i = 0; i < (int)list.size(); i++) {
+        if (i == selected_item) {
+            wattron(window, COLOR_PAIR(2));
         }
 
-        playlist_name = playlists.at(i).render();
-        mvwprintw(playlist_window, (i + 1), 3, "%s", playlist_name.c_str());
+        name = list.at(i).to_string();
+        mvwprintw(window, (i + 1), 3, "%s", name.c_str());
 
-        if (i == selected_playlist) {
-            wattroff(playlist_window, COLOR_PAIR(2));
+        if (i == selected_item) {
+            wattroff(window, COLOR_PAIR(2));
         }
     }
 
     // refresh once per frame
-    wrefresh(playlist_window);
+    wrefresh(window);
 }
 
 int main() {
@@ -106,7 +106,9 @@ int main() {
                 selected_playlist++;
                 break;
             case KEY_ENTER:
-                // switch mode to song navigation
+                // switch window to song navigation
+                keypad(playlist_window, FALSE);
+                keypad(song_window, TRUE);
 
                 break;
             default:
