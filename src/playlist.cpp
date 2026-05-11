@@ -20,6 +20,6 @@ unsigned short Playlist::size() {
     return songs.size();
 }
 
-std::vector<Song>& Playlist::get_songs(void) {
+const std::vector<Song>& Playlist::get_songs(void) const {
     return songs;
 }

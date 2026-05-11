@@ -48,5 +48,5 @@ class Playlist {
     /**
      * returns a reference to the songs vector
      */
-    std::vector<Song>& get_songs(void);
+    const std::vector<Song>& get_songs(void) const;
 };

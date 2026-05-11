@@ -4,6 +4,7 @@
 
 #include "playlist.hpp"
 #include "song.hpp"
+#include "storage.hpp"
 
 enum Mode {
     PLAYLIST,
@@ -61,7 +62,7 @@ int main() {
     // Prep default data
     Song song1("song1", "somewhere", 654);
     Song song2("song2", "nowhere", 324);
-    Song song3("song2", "everywhere", 68);
+    Song song3("song3", "everywhere", 68);
 
     Playlist pl("Playlist:1");
     pl.add(song1);
@@ -73,48 +74,77 @@ int main() {
     pl2.add(song3);
     playlists.push_back(pl2);
 
+    // Storage storage{};  // () here causes an error c++ thinks it is a function
+    // storage.add(pl2);
+
     // main playlist section
     // newwin(lines down, cols across, starting lines down, starting cols across)
     WINDOW* playlist_window = newwin((screen_y - 3), 30, 1, 3);  // Playlists
     keypad(playlist_window, TRUE);                               // enable keyboard on playlist window
 
     WINDOW* song_window = newwin((screen_y - 3), 30, 1, 33);  // songs window
+    keypad(song_window, TRUE);
 
     refresh();  // create playlists & songs window on screen
 
     int selected_playlist = 0;
     int selected_song = 0;
     int input;
+    Mode current_mode = PLAYLIST;
 
     // initial render
     render_window("Playlists", playlist_window, playlists, selected_playlist);
     render_window("Songs", song_window, (playlists.at(selected_playlist).get_songs()), selected_song);
 
     // main loop
-    while ((input = wgetch(playlist_window)) != 'q') {  // get key press
+    while ((input = wgetch(
+                (current_mode == PLAYLIST)
+                    ? playlist_window
+                    : song_window)) != 'q') {  // get key press
         switch (input) {
             case KEY_UP:
-                if (selected_playlist == 0) {
-                    continue;
-                }
-                selected_playlist--;
-                break;
-            case KEY_DOWN:
-                if (selected_playlist == ((int)playlists.size() - 1)) {
-                    continue;
-                }
-                selected_playlist++;
-                break;
-            case KEY_ENTER:
-                // switch window to song navigation
-                keypad(playlist_window, FALSE);
-                keypad(song_window, TRUE);
+                if (current_mode == PLAYLIST) {
+                    if (selected_playlist > 0) {
+                        selected_playlist--;
+                    }
 
+                } else {
+                    if (selected_song > 0) {
+                        selected_song--;
+                    }
+                }
                 break;
+
+            case KEY_DOWN:
+                if (current_mode == PLAYLIST) {
+                    if (selected_playlist == (int)playlists.size() - 1) {
+                        continue;
+                    }
+                    selected_playlist++;
+                } else {
+                    if (selected_song == (int)playlists.at(selected_playlist).get_songs().size() - 1) {
+                        continue;
+                    }
+                    selected_song++;
+                }
+                break;
+
+            case 10:  // KEY_ENTER
+                // switch window to song navigation
+                if (current_mode == PLAYLIST) {
+                    current_mode = SONG;
+                } else {
+                    current_mode = PLAYLIST;
+                    selected_song = 0;
+                }
+                break;
+
             default:
                 break;
         }
+
         render_window("Playlists", playlist_window, playlists, selected_playlist);
+        render_window("Songs", song_window, (playlists.at(selected_playlist).get_songs()), selected_song);
     }
 
     endwin();  // End ncurses mode
