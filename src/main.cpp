@@ -47,17 +47,17 @@ int main() {
     std::vector<Playlist> playlists;
 
     // setup
-    initscr();      // Start ncurses mode
-    start_color();  // turns on colour
-    cbreak();
-    noecho();
+    // initscr();      // Start ncurses mode
+    // start_color();  // turns on colour
+    // cbreak();
+    // noecho();
 
-    // colour pairs
-    init_pair(1, COLOR_BLUE, COLOR_BLACK);
-    init_pair(2, COLOR_BLACK, COLOR_WHITE);
+    // // colour pairs
+    // init_pair(1, COLOR_BLUE, COLOR_BLACK);
+    // init_pair(2, COLOR_BLACK, COLOR_WHITE);
 
-    int screen_y, screen_x;
-    getmaxyx(stdscr, screen_y, screen_x);
+    // int screen_y, screen_x;
+    // getmaxyx(stdscr, screen_y, screen_x);
 
     // Prep default data
     Song song1("song1", "somewhere", 654);
@@ -74,79 +74,78 @@ int main() {
     pl2.add(song3);
     playlists.push_back(pl2);
 
-    // Storage storage{};  // () here causes an error c++ thinks it is a function
-    // storage.add(pl2);
+    Storage storage{};  // () here causes an error c++ thinks it is a function
+    storage.add(pl2);
 
     // main playlist section
     // newwin(lines down, cols across, starting lines down, starting cols across)
-    WINDOW* playlist_window = newwin((screen_y - 3), 30, 1, 3);  // Playlists
-    keypad(playlist_window, TRUE);                               // enable keyboard on playlist window
+    // WINDOW* playlist_window = newwin((screen_y - 3), 30, 1, 3);  // Playlists
+    // keypad(playlist_window, TRUE);                               // enable keyboard on playlist window
 
-    WINDOW* song_window = newwin((screen_y - 3), 30, 1, 33);  // songs window
-    keypad(song_window, TRUE);
+    // WINDOW* song_window = newwin((screen_y - 3), 30, 1, 33);  // songs window
+    // keypad(song_window, TRUE);
 
-    refresh();  // create playlists & songs window on screen
+    // refresh();  // create playlists & songs window on screen
 
-    int selected_playlist = 0;
-    int selected_song = 0;
-    int input;
-    Mode current_mode = PLAYLIST;
+    // int selected_playlist = 0;
+    // int selected_song = 0;
+    // int input;
+    // Mode current_mode = PLAYLIST;
 
-    // initial render
-    render_window("Playlists", playlist_window, playlists, selected_playlist);
-    render_window("Songs", song_window, (playlists.at(selected_playlist).get_songs()), selected_song);
+    // // initial render
+    // render_window("Playlists", playlist_window, playlists, selected_playlist);
+    // render_window("Songs", song_window, (playlists.at(selected_playlist).get_songs()), selected_song);
 
-    // main loop
-    while ((input = wgetch(
-                (current_mode == PLAYLIST)
-                    ? playlist_window
-                    : song_window)) != 'q') {  // get key press
-        switch (input) {
-            case KEY_UP:
-                if (current_mode == PLAYLIST) {
-                    if (selected_playlist > 0) {
-                        selected_playlist--;
-                    }
+    // // main loop
+    // while ((input = wgetch(
+    //             (current_mode == PLAYLIST)
+    //                 ? playlist_window
+    //                 : song_window)) != 'q') {  // get key press
+    //     switch (input) {
+    //         case KEY_UP:
+    //             if (current_mode == PLAYLIST) {
+    //                 if (selected_playlist > 0) {
+    //                     selected_playlist--;
+    //                 }
 
-                } else {
-                    if (selected_song > 0) {
-                        selected_song--;
-                    }
-                }
-                break;
+    //             } else {
+    //                 if (selected_song > 0) {
+    //                     selected_song--;
+    //                 }
+    //             }
+    //             break;
 
-            case KEY_DOWN:
-                if (current_mode == PLAYLIST) {
-                    if (selected_playlist == (int)playlists.size() - 1) {
-                        continue;
-                    }
-                    selected_playlist++;
-                } else {
-                    if (selected_song == (int)playlists.at(selected_playlist).get_songs().size() - 1) {
-                        continue;
-                    }
-                    selected_song++;
-                }
-                break;
+    //         case KEY_DOWN:
+    //             if (current_mode == PLAYLIST) {
+    //                 if (selected_playlist < (int)playlists.size() - 1) {
+    //                     selected_playlist++;
+    //                 }
 
-            case 10:  // KEY_ENTER
-                // switch window to song navigation
-                if (current_mode == PLAYLIST) {
-                    current_mode = SONG;
-                } else {
-                    current_mode = PLAYLIST;
-                    selected_song = 0;
-                }
-                break;
+    //             } else {
+    //                 if (selected_song < (int)playlists.at(selected_playlist).get_songs().size() - 1) {
+    //                     selected_song++;
+    //                 }
+    //             }
+    //             break;
 
-            default:
-                break;
-        }
+    //         case 10:  // KEY_ENTER
+    //             // switch window to song navigation
+    //             if (current_mode == PLAYLIST) {
+    //                 current_mode = SONG;
+    //             } else {
+    //                 current_mode = PLAYLIST;
+    //                 selected_song = 0;
+    //             }
+    //             break;
 
-        render_window("Playlists", playlist_window, playlists, selected_playlist);
-        render_window("Songs", song_window, (playlists.at(selected_playlist).get_songs()), selected_song);
-    }
+    //         default:
+    //             break;
+    //     }
 
-    endwin();  // End ncurses mode
+    //     render_window("Playlists", playlist_window, playlists, selected_playlist);
+    //     render_window("Songs", song_window, (playlists.at(selected_playlist).get_songs()), selected_song);
+    // }
+
+    // endwin();  // End ncurses mode
     return 0;
 };

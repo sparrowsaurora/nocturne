@@ -2,6 +2,8 @@
 
 #include <filesystem>
 #include <fstream>
+#include <string>
+#include <vector>
 
 #include "playlist.hpp"
 #include "song.hpp"
@@ -10,7 +12,7 @@ namespace fs = std::filesystem;
 
 class Storage {
    private:
-    const fs::path json_file{"./app.json"};
+    const std::string file_name{"./build/app.toml"};
 
    public:
     Storage(void);

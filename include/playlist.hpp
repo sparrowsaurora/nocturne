@@ -10,6 +10,8 @@ class Playlist {
    private:
     std::string name;         // name of playlist
     std::vector<Song> songs;  // songs in the playlist
+    static int counter;
+    int ID;
 
    public:
     /**
@@ -49,4 +51,8 @@ class Playlist {
      * returns a reference to the songs vector
      */
     const std::vector<Song>& get_songs(void) const;
+
+    const int get_id(void) const;
+
+    const std::string get_song_ids(void) const;
 };
