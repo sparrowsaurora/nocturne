@@ -23,9 +23,27 @@ bool Storage::load(void) {
  * add song to playlist in json file
  */
 bool Storage::add(const Song& song) {
+    /*
+        [[songs]]
+        id = 1
+        name = "BIRDBRAIN"
+        file = "/<dir>/birdbrain.mp3"
+        length = 245
+    */
     if (fs::exists(file_name) != true) {
         return false;
     }
+
+    {
+        std::ofstream file(file_name, std::ios::app);
+        file << "[[songs]]\n";
+        file << "id = " + std::to_string(song.get_ID()) + "\n";
+        file << "name = \"" + song.to_string() + "\"\n";
+        file << "file = \"" + song.get_file_location() + "\"\n";
+        file << "length = " + std::to_string(song.get_song_length_seconds()) + "\n";
+        file.close();
+    }
+
     return true;
 };
 

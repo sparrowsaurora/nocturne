@@ -76,6 +76,8 @@ int main() {
 
     Storage storage{};  // () here causes an error c++ thinks it is a function
     storage.add(pl2);
+    storage.add(song1);
+    storage.add(song2);
 
     // main playlist section
     // newwin(lines down, cols across, starting lines down, starting cols across)

@@ -13,3 +13,11 @@ std::string Song::to_string() const {
 int Song::get_ID() const {
     return ID;
 }
+
+const std::string& Song::get_file_location(void) const {
+    return file_loc;
+}
+
+const int Song::get_song_length_seconds(void) const {
+    return length_s;
+}

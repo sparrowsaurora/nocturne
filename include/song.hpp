@@ -33,4 +33,14 @@ class Song {
      * Get song's auto incremented ID
      */
     int get_ID(void) const;
+
+    /**
+     * Get file path + file and extension
+     */
+    const std::string& get_file_location(void) const;
+
+    /**
+     * Get song's length in seconds
+     */
+    const int get_song_length_seconds(void) const;
 };
