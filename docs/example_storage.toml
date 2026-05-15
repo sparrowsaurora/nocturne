@@ -4,26 +4,22 @@
 
 [[songs]]
 id = 1
-name = "BIRDBRAIN"
-file = "/<dir>/birdbrain.mp3"
+file = "/<dir>/BIRDBRAIN.mp3"
 length = 245
 
 [[songs]]
 id = 2
-name = "strangers once again"
 file = "/<dir>/strangers_once_again.mp3"
 length = 198
 
 [[songs]]
 id = 3
-name = "Spoken For"
-file = "/<dir>/spoken_for.mp3"
+file = "/<dir>/Spoken_For.mp3"
 length = 310
 
 [[songs]]
 id = 4
-name = "Thia Kane"
-file = "/<dir>/thia_kane.mp3"
+file = "/<dir>/Thia_Kane.mp3"
 length = 175
 
 

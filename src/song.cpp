@@ -2,8 +2,11 @@
 
 int Song::counter = 0;  // start counter for auto incrementing ID
 
-Song::Song(const std::string& song_name, const std::string& location, const int& length_seconds) : name(song_name), file_loc(location), length_s(length_seconds) {
+Song::Song(const std::string& location, const int& length_seconds) : file_loc(location), length_s(length_seconds) {
     ID = ++counter;
+    name = location;
+    name.erase(name.length() - 4);                     // removes .mp3 from string or any 3 letter video format
+    std::replace(name.begin(), name.end(), '_', ' ');  // replace '_' with ' '
 }
 
 std::string Song::to_string() const {
