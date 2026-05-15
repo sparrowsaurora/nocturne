@@ -22,3 +22,7 @@
 ## Home
 
 11. Shuffle Songs
+
+## temp
+
+- remove song_name param, use filename as display name
