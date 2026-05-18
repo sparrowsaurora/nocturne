@@ -4,11 +4,14 @@ Storage::Storage(void) {
     std::ofstream file(file_name);
 };
 
-/**
- * Load file contents into app
- */
-bool Storage::load(void) {
-    // open json file
+std::optional<Database> Storage::load(Database database) {
+    if (fs::exists(file_name) != true) {
+        return std::nullopt;
+    }
+
+    // open file
+
+    // read lines
 
     // store lines in memory
 
@@ -16,18 +19,51 @@ bool Storage::load(void) {
 
     // load into make program
 
-    return true;
+    return database;
 };
 
-/**
- * add song to playlist in json file
- */
+bool Storage::refresh_cache(const std::string& dir) {
+    // reads <music> directory
+    for (const auto& entry : fs::directory_iterator(dir)) {
+        path_t playlist_path = entry.path();
+
+        if (!Storage::add(playlist_path)) return false;
+        // TODO: current logic returns false if ANY errors
+    }
+
+    return true;
+}
+
+bool Storage::add(const path_t& directory) {
+    std::cout << directory.filename() << std::endl;  // reads dir filenames
+
+    Playlist playlist(directory.filename());  // make playlist
+    for (const auto& file : fs::directory_iterator(directory)) {
+        // file.path() == whole path file name
+        // file.path().filename() == file name only
+        // std::cout << "\t" << file.path().filename() << std::endl;
+        // TODO: fill duration with actual value
+        const int duration{100};
+
+        // read songs into memory
+        Song song(file.path(), duration);
+        playlist.add(song);
+
+        // store songs
+        Storage::add(song);
+    }
+    // store playlist
+    // NOTE: playlists has to go after songs
+    Storage::add(playlist);
+
+    return true;
+}
+
 bool Storage::add(const Song& song) {
     /*
         [[songs]]
         id = 1
-        name = "BIRDBRAIN"
-        file = "/<dir>/birdbrain.mp3"
+        file = "/<dir>/BIRDBRAIN.mp3"
         length = 245
     */
     if (fs::exists(file_name) != true) {
@@ -38,7 +74,6 @@ bool Storage::add(const Song& song) {
         std::ofstream file(file_name, std::ios::app);
         file << "[[songs]]\n";
         file << "id = " + std::to_string(song.get_ID()) + "\n";
-        file << "name = \"" + song.to_string() + "\"\n";
         file << "file = \"" + song.get_file_location() + "\"\n";
         file << "length = " + std::to_string(song.get_song_length_seconds()) + "\n";
         file.close();
@@ -47,9 +82,6 @@ bool Storage::add(const Song& song) {
     return true;
 };
 
-/**
- * add playlist to json file
- */
 bool Storage::add(const Playlist& playlist) {
     /*
         Example structure:

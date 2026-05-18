@@ -78,25 +78,27 @@ int main() {
     // int screen_y, screen_x;
     // getmaxyx(stdscr, screen_y, screen_x);
 
+    ////////////////////////////////////
     // Prep default data
-    Song song1("this_place.mp3", 654);
-    Song song2("nowhere.mp3", 324);
-    Song song3("everywhere.mp3", 68);
+    // Song song1("this_place.mp3", 654);
+    // Song song2("nowhere.mp3", 324);
+    // Song song3("everywhere.mp3", 68);
 
-    Playlist pl("Playlist:1");
-    pl.add(song1);
-    pl.add(song2);
-    database.playlists.push_back(pl);
+    // Playlist pl("Playlist:1");
+    // pl.add(song1);
+    // pl.add(song2);
+    // database.playlists.push_back(pl);
 
-    Playlist pl2("Playlist:2");
-    pl2.add(song2);
-    pl2.add(song3);
-    database.playlists.push_back(pl2);
+    // Playlist pl2("Playlist:2");
+    // pl2.add(song2);
+    // pl2.add(song3);
+    // database.playlists.push_back(pl2);
 
     Storage storage{};  // () here causes an error c++ thinks it is a function
-    storage.add(pl2);
-    storage.add(song1);
-    storage.add(song2);
+    // storage.add(pl2);
+    // storage.add(song1);
+    // storage.add(song2);
+    /////////////////////////////////////
 
     storage.refresh_cache(music_dir);
 
