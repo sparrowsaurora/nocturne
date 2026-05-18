@@ -1,7 +1,9 @@
 #include <ncurses.h>
 
-#include <vector>
+// #include <vector>
+#include <iostream>
 
+#include "config.hpp"
 #include "playlist.hpp"
 #include "song.hpp"
 #include "storage.hpp"
@@ -44,7 +46,24 @@ void render_window(
 }
 
 int main() {
-    std::vector<Playlist> playlists;
+    Database database;
+
+    std::optional<config_t> opt_config = Config::get_config();
+
+    if (!opt_config.has_value()) {
+        std::cerr << "Failed to load config\n";
+        return 1;
+    }
+    config_t config = *opt_config;
+
+    std::string music_dir = std::get<std::string>(config.at("music_dir"));
+
+    // std::cout << "files main can see" << std::endl;
+    // for (const auto& entry : fs::directory_iterator(".")) {
+    //     std::cout << entry.path() << std::endl;
+    // }
+
+    // std::vector<Playlist> playlists;
 
     // setup
     // initscr();      // Start ncurses mode
@@ -60,24 +79,26 @@ int main() {
     // getmaxyx(stdscr, screen_y, screen_x);
 
     // Prep default data
-    Song song1("song1", "somewhere", 654);
-    Song song2("song2", "nowhere", 324);
-    Song song3("song3", "everywhere", 68);
+    Song song1("this_place.mp3", 654);
+    Song song2("nowhere.mp3", 324);
+    Song song3("everywhere.mp3", 68);
 
     Playlist pl("Playlist:1");
     pl.add(song1);
     pl.add(song2);
-    playlists.push_back(pl);
+    database.playlists.push_back(pl);
 
     Playlist pl2("Playlist:2");
     pl2.add(song2);
     pl2.add(song3);
-    playlists.push_back(pl2);
+    database.playlists.push_back(pl2);
 
     Storage storage{};  // () here causes an error c++ thinks it is a function
     storage.add(pl2);
     storage.add(song1);
     storage.add(song2);
+
+    storage.refresh_cache(music_dir);
 
     // main playlist section
     // newwin(lines down, cols across, starting lines down, starting cols across)
