@@ -22,6 +22,14 @@ class Playlist {
     Playlist(const std::string& playlist_name);
 
     /**
+     * constructor for Playlist
+     *
+     * const std::string& playlist_name = name
+     * const std::vector<int> song_ids = list of song's ids in this playlists
+     */
+    Playlist(const std::string& playlist_name, const std::vector<int> song_ids);
+
+    /**
      * adds a song to the 'songs' vector
      *
      * @note
@@ -55,4 +63,6 @@ class Playlist {
     const int get_id(void) const;
 
     const std::string get_song_ids(void) const;
+
+    static const std::vector<int> to_song_ids(std::string& ids);
 };

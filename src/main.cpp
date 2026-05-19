@@ -101,6 +101,12 @@ int main() {
     /////////////////////////////////////
 
     storage.refresh_cache(music_dir);
+    std::optional<Database> db2 = storage.load(database);
+    if (!db2.has_value()) {
+        std::cerr << "Failed to load database\n";
+        return 1;
+    }
+    Database db = *db2;
 
     // main playlist section
     // newwin(lines down, cols across, starting lines down, starting cols across)

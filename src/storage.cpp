@@ -1,16 +1,82 @@
 #include "storage.hpp"
 
+static inline std::string trim(std::string s) {
+    auto not_space = [](unsigned char c) {
+        return !std::isspace(c);
+    };
+
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), not_space));
+    s.erase(std::find_if(s.rbegin(), s.rend(), not_space).base(), s.end());
+
+    return s;
+}
+
 Storage::Storage(void) {
     std::ofstream file(file_name);
 };
 
-std::optional<Database> Storage::load(Database database) {
+std::optional<Database> Storage::load(Database db) {
     if (fs::exists(file_name) != true) {
         return std::nullopt;
     }
 
     // open file
+    {  // context manager
+        std::ifstream ifile(Storage::file_name);
 
+        if (!ifile.is_open()) {
+            std::cerr << "Error: Could not open the file!" << std::endl;
+            return std::nullopt;
+        }
+
+        std::string line, key, value;
+        while (std::getline(ifile, line)) {
+            svec_t values;
+            if (line.empty()) continue;
+            if (line == "[[songs]]") {
+                for (int i = 0; i < 3; i++) {
+                    std::getline(ifile, line);
+                    auto pos = line.find('=');
+                    if (pos == std::string::npos) continue;
+
+                    // std::string key = trim(line.substr(0, pos));
+                    std::string value = trim(line.substr(pos + 1));
+
+                    if (value[0] == '"') {
+                        std::erase(value, '"');  // if string in config file remove extra " pair
+                    }
+
+                    values.push_back(value);
+                }
+
+                std::string file_loc = values.at(1);
+                int length = std::stoi(values.at(2));
+                Song song(file_loc, length);
+
+                db.songs.push_back(song);
+
+            } else if ("[[playlists]]") {
+                for (int i = 0; i < 3; i++) {
+                    std::getline(ifile, line);
+                    auto pos = line.find('=');
+                    if (pos == std::string::npos) continue;
+
+                    std::string value = trim(line.substr(pos + 1));
+
+                    if (value[0] == '"') {
+                        std::erase(value, '"');  // if string in config file remove extra " pair
+                    }
+
+                    values.push_back(value);
+                }
+                std::vector<int> song_ids = Playlist::to_song_ids(values.at(2));
+
+                Playlist playlist(values.at(1), song_ids);
+
+                db.playlists.push_back(playlist);
+            }
+        }
+    }
     // read lines
 
     // store lines in memory
@@ -19,7 +85,7 @@ std::optional<Database> Storage::load(Database database) {
 
     // load into make program
 
-    return database;
+    return db;
 };
 
 bool Storage::refresh_cache(const std::string& dir) {
@@ -35,7 +101,7 @@ bool Storage::refresh_cache(const std::string& dir) {
 }
 
 bool Storage::add(const path_t& directory) {
-    std::cout << directory.filename() << std::endl;  // reads dir filenames
+    // std::cout << directory.filename() << std::endl;  // reads dir filenames
 
     Playlist playlist(directory.filename());  // make playlist
     for (const auto& file : fs::directory_iterator(directory)) {

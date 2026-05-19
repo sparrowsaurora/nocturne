@@ -46,4 +46,6 @@ class Song {
      * Get song's length in seconds
      */
     const int get_song_length_seconds(void) const;
+
+    static const Song& find(int song_id);
 };

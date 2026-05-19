@@ -29,8 +29,7 @@ std::optional<config_t> Config::get_config() {
         }
 
         // convert data to map
-        std::string line, content, key, value;
-        std::string_view text;
+        std::string line, key, value;
         while (std::getline(file, line)) {
             if (line.empty() || line[0] == '#') continue;
             auto pos = line.find('=');
