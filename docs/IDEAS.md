@@ -4,7 +4,7 @@ a main menu where you can select playlists > songs
 
 (optional frequently played songs or playlists of option somewhere (maybe on top))
 
-extensible to embedded systemes device by giving songs an unique song ID
+extensiblbe to embedded systemes device by giving songs an unique song ID
 (maybe each disk on the player scans as sends a signal for a select ID)
 
 use JSON to handle settings and storage
