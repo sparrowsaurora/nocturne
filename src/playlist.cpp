@@ -10,6 +10,9 @@ Playlist::Playlist(const std::string& playlist_name, const std::vector<int> song
     ID = ++counter;
     // add song ids here.
     // song id to song
+    // for id in song_ids
+    // get song where song == song id
+    // dd song
 }
 
 void Playlist::add(const Song& song) {
@@ -60,7 +63,8 @@ const std::vector<int> Playlist::to_song_ids(std::string& ids) {
     ids.erase(ids.length() - 1);
 
     // remove delimiter ', '
-    std::erase(ids, ", ");
+    std::erase(ids, ',');
+    std::erase(ids, ' ');
 
     for (auto& c : ids) {
         int num = c - '0';  // trick to get correct num using '0' char code

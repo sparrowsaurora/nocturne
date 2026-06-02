@@ -46,7 +46,7 @@ void render_window(
 }
 
 int main() {
-    Database database;
+    Database db;
 
     std::optional<config_t> opt_config = Config::get_config();
 
@@ -100,13 +100,12 @@ int main() {
     // storage.add(song2);
     /////////////////////////////////////
 
-    storage.refresh_cache(music_dir);
-    std::optional<Database> db2 = storage.load(database);
-    if (!db2.has_value()) {
+    std::optional<Database> odb = storage.load(music_dir);
+    if (!odb.has_value()) {
         std::cerr << "Failed to load database\n";
         return 1;
     }
-    Database db = *db2;
+    db = *odb;
 
     // main playlist section
     // newwin(lines down, cols across, starting lines down, starting cols across)

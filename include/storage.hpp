@@ -17,37 +17,10 @@ typedef struct database {
 namespace fs = std::filesystem;
 using path_t = fs::__cxx11::path;
 
-using svec_t = std::vector<std::string>;
-
 class Storage {
-   private:
-    inline static const std::string file_name{"./build/cache.toml"};
-
    public:
-    Storage(void);
-
     /**
-     * read toml file to quickload songs
+     * Load Songs into database
      */
-    std::optional<Database> load(Database db);
-
-    /**
-     * utility to refresh cache with any songs and playlists added without the app
-     */
-    bool refresh_cache(const std::string& dir);
-
-    /**
-     * add song to playlist in json file
-     */
-    static bool add(const Song& song);
-
-    /**
-     * add song to playlist in json file
-     */
-    static bool add(const Playlist& playlist);
-
-    /**
-     * use directory to add entire playlist with songs
-     */
-    static bool add(const path_t& directory);
+    static std::optional<Database> load(const path_t& directory);
 };
