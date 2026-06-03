@@ -11,7 +11,7 @@
 
 typedef struct database {
     std::vector<Playlist> playlists;
-    std::vector<Song> songs;
+    // std::vector<Song> songs;
 } Database;
 
 namespace fs = std::filesystem;
