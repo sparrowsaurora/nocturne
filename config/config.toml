@@ -1,2 +1,7 @@
 music_dir = "./music"
 # volume = 75
+colour_scheme = "night"
+# "peach"
+# "mono"
+# "latte"
+# "light"

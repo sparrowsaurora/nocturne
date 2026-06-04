@@ -14,6 +14,8 @@ I listen to a lot of indie bands, and that means a lot of the songs i like on sp
 - to ensure my music collection isnt altered by a company
 - To interface with an embedded systems project that I'm working on
 
+<br>
+
 ![screenshot of the TUI music player](docs/assets/home_page.png)
 
 ## Features
@@ -25,7 +27,16 @@ I listen to a lot of indie bands, and that means a lot of the songs i like on sp
 
 ## Usage
 
-_... TODO ..._
+1. Select a directory as your \<music> directory in the config.toml file.
+2. Add your music, the directories in this directory are considered playlists, and the audio files in those directories are considered songs.
+3. Run the program.
+
+That's it.
+
+## Credits
+
+- [Ncurses](https://invisible-island.net/ncurses/)
+- [SFML 2.6](https://www.sfml-dev.org/)
 
 ## License
 

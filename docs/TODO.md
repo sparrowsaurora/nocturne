@@ -24,3 +24,6 @@
 
 1. Shuffle Songs
 2. play song via ID
+
+config options to customise colourscheme
+add song.get_path() for sfml
