@@ -13,6 +13,8 @@
 #define songs_window_width 50
 #define songs_starting_cols_across 33
 
+#define KEY_ENTER 10
+
 enum Mode {
     PLAYLIST,
     SONG,
@@ -146,7 +148,7 @@ int main() {
                 }
                 break;
 
-            case 10:  // KEY_ENTER
+            case KEY_ENTER:  // 10
                 // switch window to song navigation
                 if (current_mode == PLAYLIST) {
                     current_mode = SONG;

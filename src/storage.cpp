@@ -12,7 +12,7 @@ std::optional<Database> Storage::load(const path_t& directory) {
         // file.path() == whole path file name
         // file.path().filename() == file name only
         // std::cout << "\t" << playlist.path().filename() << std::endl;
-        Playlist pl(directory.filename());  // make playlist
+        Playlist pl(playlist.path().filename());  // make playlist
 
         for (const auto& song : fs::directory_iterator(playlist.path())) {
             // std::cout << "\t\t" << song.path().filename() << std::endl;
