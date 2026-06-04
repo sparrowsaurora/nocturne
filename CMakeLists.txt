@@ -9,6 +9,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 find_package(Curses REQUIRED)
 include_directories(${CURSES_INCLUDE_DIR})
 
+find_package(SFML 2.6 REQUIRED COMPONENTS audio)
+
 add_executable(nocturne
     src/main.cpp
     src/song.cpp
@@ -18,7 +20,12 @@ add_executable(nocturne
 )
 
 # add include dir
-target_include_directories(nocturne PRIVATE ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(nocturne PRIVATE 
+    ${PROJECT_SOURCE_DIR}/include
+)
 
 # Link ncurses
-target_link_libraries(nocturne ${CURSES_LIBRARIES})
+target_link_libraries(nocturne PRIVATE
+    ${CURSES_LIBRARIES}
+    sfml-audio
+)

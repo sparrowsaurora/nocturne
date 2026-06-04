@@ -1,6 +1,6 @@
 #include <ncurses.h>
 
-// #include <vector>
+#include <SFML/Audio.hpp>
 #include <iostream>
 
 #include "config.hpp"
@@ -13,6 +13,7 @@
 #define songs_window_width 50
 #define songs_starting_cols_across 33
 
+#undef KEY_ENTER
 #define KEY_ENTER 10
 
 enum Mode {
