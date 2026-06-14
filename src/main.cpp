@@ -16,17 +16,14 @@
 #undef KEY_ENTER
 #define KEY_ENTER 10
 
-enum Mode {
+enum class Mode {
     PLAYLIST,
     SONG,
 };
 
 template <typename T>
-void render_window(
-    const char* title,
-    WINDOW* window,
-    const std::vector<T>& list,
-    int selected_item) {
+void render_window(const char* title, WINDOW* window, const std::vector<T>& list,
+                   int selected_item) {
     werase(window);  // clear playlist window
 
     wattron(window, COLOR_PAIR(1));
@@ -35,7 +32,7 @@ void render_window(
     mvwprintw(window, 0, 2, "%s", title);  // playlist word still white
 
     std::string name;
-    for (int i = 0; i < (int)list.size(); i++) {
+    for (int i{}; i < (int)list.size(); i++) {
         if (i == selected_item) {
             wattron(window, COLOR_PAIR(2));
         }
@@ -57,17 +54,7 @@ void render_window(
 }
 
 int main() {
-    Database db;
-
-    std::optional<config_t> opt_config = Config::get_config();
-
-    if (!opt_config.has_value()) {
-        std::cerr << "Failed to load config\n";
-        return 1;
-    }
-    config_t config = *opt_config;
-
-    // setup
+    // initial setup of screen
     initscr();      // Start ncurses mode
     start_color();  // turns on colour
     cbreak();
@@ -80,8 +67,17 @@ int main() {
     int screen_y, screen_x;
     getmaxyx(stdscr, screen_y, screen_x);
 
-    Storage storage{};  // () here causes an error c++ thinks it is a function
+    // retrieve config
+    std::optional<config_t> opt_config = Config::get_config();
+    if (!opt_config.has_value()) {
+        std::cerr << "Failed to load config\n";
+        return 1;
+    }
+    config_t config = *opt_config;  // render config file to map
 
+    // start db
+    Database db;
+    Storage storage{};  // () here causes an error c++ thinks it is a function
     std::string music_dir = std::get<std::string>(config.at("music_dir"));
     std::optional<Database> odb = storage.load(music_dir);
     if (!odb.has_value()) {
@@ -92,39 +88,30 @@ int main() {
 
     // main playlist section
     // newwin(lines down, cols across, starting lines down, starting cols across)
-    WINDOW* playlist_window = newwin(
-        (screen_y - 3),
-        playlists_window_width,
-        1,
-        playlists_starting_cols_across);  // Playlists
-    keypad(playlist_window, TRUE);        // enable keyboard on playlist window
+    WINDOW* playlist_window = newwin((screen_y - 3), playlists_window_width, 1,
+                                     playlists_starting_cols_across);  // Playlists
+    keypad(playlist_window, TRUE);  // enable keyboard on playlist window
 
-    WINDOW* song_window = newwin(
-        (screen_y - 3),
-        songs_window_width,
-        1,
-        songs_starting_cols_across);  // songs window
+    WINDOW* song_window = newwin((screen_y - 3), songs_window_width, 1,
+                                 songs_starting_cols_across);  // songs window
     keypad(song_window, TRUE);
 
     refresh();  // create playlists & songs window on screen
 
-    int selected_playlist = 0;
-    int selected_song = 0;
-    int input;
-    Mode current_mode = PLAYLIST;
+    int selected_playlist{}, selected_song{}, input{};
+    Mode current_mode{Mode::PLAYLIST};
 
-    // initial render
+    // initial render of screen
     render_window("Playlists", playlist_window, db.playlists, selected_playlist);
-    render_window("Songs", song_window, (db.playlists.at(selected_playlist).get_songs()), selected_song);
+    render_window("Songs", song_window, (db.playlists.at(selected_playlist).get_songs()),
+                  selected_song);
 
-    // main loop
-    while ((input = wgetch(
-                (current_mode == PLAYLIST)
-                    ? playlist_window
-                    : song_window)) != 'q') {  // get key press
+    // Event loop
+    while ((input = wgetch((current_mode == Mode::PLAYLIST) ? playlist_window : song_window)) !=
+           'q') {  // get key press
         switch (input) {
             case KEY_UP:
-                if (current_mode == PLAYLIST) {
+                if (current_mode == Mode::PLAYLIST) {
                     if (selected_playlist > 0) {
                         selected_playlist--;
                     }
@@ -137,13 +124,14 @@ int main() {
                 break;
 
             case KEY_DOWN:
-                if (current_mode == PLAYLIST) {
+                if (current_mode == Mode::PLAYLIST) {
                     if (selected_playlist < (int)db.playlists.size() - 1) {
                         selected_playlist++;
                     }
 
                 } else {
-                    if (selected_song < (int)db.playlists.at(selected_playlist).get_songs().size() - 1) {
+                    if (selected_song <
+                        (int)db.playlists.at(selected_playlist).get_songs().size() - 1) {
                         selected_song++;
                     }
                 }
@@ -151,10 +139,10 @@ int main() {
 
             case KEY_ENTER:  // 10
                 // switch window to song navigation
-                if (current_mode == PLAYLIST) {
-                    current_mode = SONG;
+                if (current_mode == Mode::PLAYLIST) {
+                    current_mode = Mode::SONG;
                 } else {
-                    current_mode = PLAYLIST;
+                    current_mode = Mode::PLAYLIST;
                     selected_song = 0;
                 }
                 break;
@@ -164,7 +152,8 @@ int main() {
         }
 
         render_window("Playlists", playlist_window, db.playlists, selected_playlist);
-        render_window("Songs", song_window, (db.playlists.at(selected_playlist).get_songs()), selected_song);
+        render_window("Songs", song_window, (db.playlists.at(selected_playlist).get_songs()),
+                      selected_song);
     }
 
     endwin();  // End ncurses mode
