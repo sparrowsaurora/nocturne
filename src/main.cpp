@@ -7,6 +7,7 @@
 #include "playlist.hpp"
 #include "song.hpp"
 #include "storage.hpp"
+#include "tui.hpp"
 
 #define playlists_window_width 30
 #define playlists_starting_cols_across 3
@@ -21,39 +22,9 @@ enum class Mode {
     SONG,
 };
 
-template <typename T>
-void render_window(const char* title, WINDOW* window, const std::vector<T>& list,
-                   int selected_item) {
-    werase(window);  // clear playlist window
-
-    wattron(window, COLOR_PAIR(1));
-    box(window, 0, 0);  // make box have borders
-    wattroff(window, COLOR_PAIR(1));
-    mvwprintw(window, 0, 2, "%s", title);  // playlist word still white
-
-    std::string name;
-    for (int i{}; i < (int)list.size(); i++) {
-        if (i == selected_item) {
-            wattron(window, COLOR_PAIR(2));
-        }
-
-        if (title == "Playlists") {
-            name = list.at(i).to_string();
-        } else if (title == "Songs") {
-            name = list.at(i).to_string();
-        }
-
-        mvwprintw(window, (i + 1), 3, "%s", name.c_str());
-
-        if (i == selected_item) {
-            wattroff(window, COLOR_PAIR(2));
-        }
-    }
-    // refresh once per frame
-    wrefresh(window);
-}
-
 int main() {
+    Tui ui{};
+
     // initial setup of screen
     initscr();      // Start ncurses mode
     start_color();  // turns on colour
@@ -102,9 +73,9 @@ int main() {
     Mode current_mode{Mode::PLAYLIST};
 
     // initial render of screen
-    render_window("Playlists", playlist_window, db.playlists, selected_playlist);
-    render_window("Songs", song_window, (db.playlists.at(selected_playlist).get_songs()),
-                  selected_song);
+    ui.render_window("Playlists", playlist_window, db.playlists, selected_playlist);
+    ui.render_window("Songs", song_window, (db.playlists.at(selected_playlist).get_songs()),
+                     selected_song);
 
     // Event loop
     while ((input = wgetch((current_mode == Mode::PLAYLIST) ? playlist_window : song_window)) !=
@@ -151,9 +122,9 @@ int main() {
                 break;
         }
 
-        render_window("Playlists", playlist_window, db.playlists, selected_playlist);
-        render_window("Songs", song_window, (db.playlists.at(selected_playlist).get_songs()),
-                      selected_song);
+        ui.render_window("Playlists", playlist_window, db.playlists, selected_playlist);
+        ui.render_window("Songs", song_window, (db.playlists.at(selected_playlist).get_songs()),
+                         selected_song);
     }
 
     endwin();  // End ncurses mode

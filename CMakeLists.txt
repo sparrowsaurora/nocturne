@@ -17,6 +17,7 @@ add_executable(nocturne
     src/playlist.cpp
     src/storage.cpp
     src/config.cpp
+    src/tui.cpp
 )
 
 # add include dir
