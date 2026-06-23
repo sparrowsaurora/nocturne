@@ -23,20 +23,8 @@ enum class Mode {
 };
 
 int main() {
-    Tui ui{};
-
     // initial setup of screen
-    initscr();      // Start ncurses mode
-    start_color();  // turns on colour
-    cbreak();
-    noecho();
-
-    // colour pairs
-    init_pair(1, COLOR_BLUE, COLOR_BLACK);
-    init_pair(2, COLOR_BLACK, COLOR_WHITE);
-
-    int screen_y, screen_x;
-    getmaxyx(stdscr, screen_y, screen_x);
+    Tui ui{};
 
     // retrieve config
     std::optional<config_t> opt_config = Config::get_config();
@@ -59,11 +47,11 @@ int main() {
 
     // main playlist section
     // newwin(lines down, cols across, starting lines down, starting cols across)
-    WINDOW* playlist_window = newwin((screen_y - 3), playlists_window_width, 1,
+    WINDOW* playlist_window = newwin((ui.get_screen_y() - 3), playlists_window_width, 1,
                                      playlists_starting_cols_across);  // Playlists
     keypad(playlist_window, TRUE);  // enable keyboard on playlist window
 
-    WINDOW* song_window = newwin((screen_y - 3), songs_window_width, 1,
+    WINDOW* song_window = newwin((ui.get_screen_y() - 3), songs_window_width, 1,
                                  songs_starting_cols_across);  // songs window
     keypad(song_window, TRUE);
 
@@ -127,6 +115,6 @@ int main() {
                          selected_song);
     }
 
-    endwin();  // End ncurses mode
+    ui.exit();  // End ncurses mode
     return 0;
 };
