@@ -26,6 +26,8 @@ int main() {
     // initial setup of screen
     Tui ui{};
 
+    sf::Music music{};
+
     // retrieve config
     std::optional<config_t> opt_config = Config::get_config();
     if (!opt_config.has_value()) {
@@ -100,7 +102,14 @@ int main() {
                 // switch window to song navigation
                 if (current_mode == Mode::PLAYLIST) {
                     current_mode = Mode::SONG;
-                } else {
+                } else {  // Mode == SONG
+                    // play song
+                    if (!music.openFromFile(current_song.get_path()))
+                    //  await KEY_SPACE
+                }
+                break;
+            case KEY_BACKSPACE:
+                if (current_mode == Mode::SONG) {
                     current_mode = Mode::PLAYLIST;
                     selected_song = 0;
                 }
